@@ -1,5 +1,7 @@
 package com.example.a1449877.assignment4gson.Model.Server;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 /**
@@ -12,6 +14,12 @@ public class User {
     private String password;
     private String email;
     private List<Note> created;
+
+    public User(String name, String password, String email) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 
 
     public long getId() {
@@ -52,10 +60,22 @@ public class User {
     }
 
     public static User parse(String userJson) {
-        return null;
+        return new Gson().fromJson(userJson, User.class);
     }
 
     public boolean isPassword(String foobar) {
         return true;
+    }
+
+    public String getUrl() {
+        return null;
+    }
+
+    public static User[] parseArray(String userListJson) {
+        return null;
+    }
+
+    public String format() {
+        return new Gson().toJson(this);
     }
 }
