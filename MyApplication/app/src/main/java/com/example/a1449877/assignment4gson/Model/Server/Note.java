@@ -1,5 +1,14 @@
 package com.example.a1449877.assignment4gson.Model.Server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -55,8 +64,24 @@ public class Note {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setCreatedBy(String urlString) throws IOException {
+        BufferedReader reader = null;
+        try {
+            URL url = new URL(urlString);
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            StringBuffer buffer = new StringBuffer();
+
+            int read;
+            char[] chars = new char[1024];
+            while ((read = reader.read(chars)) != -1)
+                buffer.append(chars, 0, read);
+
+            this.createdBy = new Gson().fromJson(buffer.toString(), User.class);
+
+        } finally {
+            if (reader != null)
+                reader.close();
+        }
     }
 
     public int getCategory() {
@@ -65,5 +90,25 @@ public class Note {
 
     public void setCategory(int category) {
         this.category = category;
+    }
+
+    public static Note parse(String noteJson) {
+        return new Gson().fromJson(noteJson, Note.class);
+    }
+
+    public String getUrl() {
+        return null;
+    }
+
+    public boolean isHasReminder() {
+        return reminder != null;
+    }
+
+    public static Note[] parseArray(String noteListJson) {
+        return new Gson().fromJson(noteListJson, Note[].class);
+    }
+
+    public String format() {
+        return null;
     }
 }
