@@ -1,13 +1,11 @@
-package com.example.a1449877.assignment4gson;
-
-import com.example.a1449877.assignment4gson.Model.Server.Note;
-import com.example.a1449877.assignment4gson.Model.Server.User;
+package com.example.a1449877.assignment4gson.Model.Server;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import ca.qc.johnabbott.cs616.notes.server.Model.Server.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -354,7 +352,7 @@ public class TestJson {
             note.setCreated(format.parse("2016-10-12T20:32:54.000+0000"));
             note.setCreatedBy("http://localhost:9999/user/1");
             assertEquals("{\"title\":\"foo\",\"body\":\"bar\",\"category\":123,\"reminder\":\"2016-09-10T00:23:34.000-0400\",\"created\":\"2016-10-12T16:32:54.000-0400\",\"createdBy\":\"http://localhost:9999/user/1\"}", note.format());
-        } catch (ParseException | IOException e) {
+        } catch (ParseException e) {
             fail();
         }
     }
