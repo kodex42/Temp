@@ -1,14 +1,11 @@
 package com.example.a1449877.assignment4gson.Model.Server;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -23,6 +20,24 @@ public class Note {
     private String body;
     private int category;
     private User createdBy;
+    private _links _links;
+
+    private static class _links {
+        private static class self { private String href; }
+        private static class note { private String href; }
+        private static class createdBy { private String href; }
+
+        private self self;
+        private note note;
+        private createdBy createdBy;
+    }
+
+    private static class NoteList {
+        private static class _embedded {
+            private Note[] note;
+        }
+        private _embedded _embedded;
+    }
 
     public long getId() {
         return id;
@@ -60,12 +75,22 @@ public class Note {
         this.body = body;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public String getCreatedBy() {
+        String url = _links.createdBy.href;
+        return url;
+/*
+        try {
+            return new User(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        */
     }
 
     public void setCreatedBy(String urlString) throws IOException {
-        BufferedReader reader = null;
+        _links.createdBy.href = urlString;
+        /*BufferedReader reader = null;
         try {
             URL url = new URL(urlString);
             reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -81,7 +106,10 @@ public class Note {
         } finally {
             if (reader != null)
                 reader.close();
-        }
+        }*/
+
+
+
     }
 
     public int getCategory() {
@@ -97,7 +125,7 @@ public class Note {
     }
 
     public String getUrl() {
-        return null;
+        return _links.self.href;
     }
 
     public boolean isHasReminder() {
@@ -105,7 +133,7 @@ public class Note {
     }
 
     public static Note[] parseArray(String noteListJson) {
-        return new Gson().fromJson(noteListJson, Note[].class);
+        return new Gson().fromJson(noteListJson, NoteList.class);
     }
 
     public String format() {
