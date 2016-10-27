@@ -2,10 +2,8 @@ package com.example.a1449877.assignment4gson.Model.Server;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,7 +11,6 @@ import java.util.Date;
  */
 public class Note {
 
-    private long id;
     private Date created;
     private Date reminder;
     private String title;
@@ -32,15 +29,13 @@ public class Note {
         private createdBy createdBy;
     }
 
-    private static class NoteList {
+    public static class NoteList {
         private static class _embedded {
             private Note[] note;
         }
         private _embedded _embedded;
-    }
 
-    public long getId() {
-        return id;
+        public Note[] getNotes() { return _embedded.note; }
     }
 
     public Date getCreated() {
@@ -56,6 +51,9 @@ public class Note {
     }
 
     public void setReminder(Date reminder) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss.SZ");
+
+        // TODO: FIX THIS SHIT
         this.reminder = reminder;
     }
 
@@ -76,40 +74,13 @@ public class Note {
     }
 
     public String getCreatedBy() {
-        String url = _links.createdBy.href;
-        return url;
-/*
-        try {
-            return new User(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        */
+        return _links.createdBy.href;
     }
 
     public void setCreatedBy(String urlString) throws IOException {
+        _links = new _links();
+        _links.createdBy = new _links.createdBy();
         _links.createdBy.href = urlString;
-        /*BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
-
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
-
-            this.createdBy = new Gson().fromJson(buffer.toString(), User.class);
-
-        } finally {
-            if (reader != null)
-                reader.close();
-        }*/
-
-
-
     }
 
     public int getCategory() {
@@ -133,10 +104,10 @@ public class Note {
     }
 
     public static Note[] parseArray(String noteListJson) {
-        return new Gson().fromJson(noteListJson, NoteList.class);
+        return new Gson().fromJson(noteListJson, NoteList.class).getNotes();
     }
 
     public String format() {
-        return null;
+        return "{\"title\":\"" + title + "\",\"body\":\"" + body + "\",\"category\":" + category + ",\"reminder\":\"" + reminder + "\",\"created\":\"" + created + "\",\"createdBy\":\"" + _links.createdBy.href + "\"}";
     }
 }

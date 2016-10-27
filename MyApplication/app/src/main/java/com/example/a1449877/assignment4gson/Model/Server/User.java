@@ -2,19 +2,13 @@ package com.example.a1449877.assignment4gson.Model.Server;
 
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by ian on 15-10-02.
  */
 public class User {
 
-    private long id;
     private String name;
     private String password;
     private String email;
@@ -26,38 +20,25 @@ public class User {
         this.email = email;
     }
 
-    public User(String urlString) throws IOException {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
+    private static class _links {
+        private static class self { private String href; }
+        private static class note { private String href; }
+        private static class created { private String href; }
 
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read);
+        private User._links.self self;
+        private User._links.note note;
+        private User._links.created created;
+    }
 
-            User user = new Gson().fromJson(buffer.toString(), User.class);
-
-            id = user.getId();
-            name = user.getName();
-            password = user.getPassword();
-            email = user.getEmail();
-            created = user.getCreated();
-
-        } finally {
-            if (reader != null)
-                reader.close();
+    public static class UserList {
+        private static class _embedded {
+            private User[] user;
         }
+        private _embedded _embedded;
 
-
+        public User[] getUsers() { return _embedded.user; }
     }
 
-
-    public long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -105,7 +86,7 @@ public class User {
     }
 
     public static User[] parseArray(String userListJson) {
-        return null;
+        return new Gson().fromJson(userListJson, UserList.class).getUsers();
     }
 
     public String format() {
