@@ -78,6 +78,7 @@ public class User {
     }
 
     public boolean isPassword(String password) {
+        // TODO: MessageDigest.getInstance("SHA-1") Google it
         return this.password.equals(password);
     }
 
